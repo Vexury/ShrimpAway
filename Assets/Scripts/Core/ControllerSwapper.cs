@@ -6,8 +6,9 @@ public class ControllerSwapper : MonoBehaviour
     [Header("References")]
     [SerializeField] private InputReader inputReader;
     [SerializeField] private CharacterController characterController;
+    [SerializeField] private Rigidbody rb;
     [SerializeField] private TopDownController topDownController;
-    [SerializeField] private VehicleController vehicleController;
+    [SerializeField] private VehicleControllerRigidbody vehicleController;
     [SerializeField] private GameObject topDownGeometry;
     [SerializeField] private GameObject carGeometry;
     [SerializeField] private TMP_Text controllerLabel;
@@ -21,15 +22,16 @@ public class ControllerSwapper : MonoBehaviour
     [SerializeField] private float topDownRadius = 0.4f;
     [SerializeField] private Vector3 topDownCenter = new Vector3(0f, 1f, 0f);
 
-    [Header("Vehicle Capsule")]
-    [SerializeField] private float vehicleHeight = 1.2f;
-    [SerializeField] private float vehicleRadius = 1f;
-    [SerializeField] private Vector3 vehicleCenter = new Vector3(0f, 0.6f, 0f);
+    public enum ControllerMode { TopDown, Vehicle }
 
-    private bool isTopDown = true;
+    [Header("Default")]
+    [SerializeField] private ControllerMode defaultMode = ControllerMode.TopDown;
+
+    private ControllerMode currentMode;
 
     private void Start()
     {
+        currentMode = defaultMode;
         Apply();
     }
 
@@ -45,28 +47,27 @@ public class ControllerSwapper : MonoBehaviour
 
     private void Cycle()
     {
-        isTopDown = !isTopDown;
+        currentMode = currentMode == ControllerMode.TopDown ? ControllerMode.Vehicle : ControllerMode.TopDown;
         Apply();
     }
 
     private void Apply()
     {
+        bool isTopDown = currentMode == ControllerMode.TopDown;
+
         topDownController.enabled = isTopDown;
         vehicleController.enabled = !isTopDown;
         topDownGeometry.SetActive(isTopDown);
         carGeometry.SetActive(!isTopDown);
+
+        characterController.enabled = isTopDown;
+        rb.isKinematic = isTopDown;
 
         if (isTopDown)
         {
             characterController.height = topDownHeight;
             characterController.radius = topDownRadius;
             characterController.center = topDownCenter;
-        }
-        else
-        {
-            characterController.height = vehicleHeight;
-            characterController.radius = vehicleRadius;
-            characterController.center = vehicleCenter;
         }
 
         if (controllerLabel != null)

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class VehicleController : MonoBehaviour
+public class VehicleController : MonoBehaviour, IVehicle
 {
     [Header("References")]
     [SerializeField] private InputReader inputReader;
