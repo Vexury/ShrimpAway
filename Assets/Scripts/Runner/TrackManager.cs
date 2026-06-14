@@ -14,24 +14,31 @@ public class TrackManager : MonoBehaviour
     {
         public GameObject prefab;
         public float weight = 1f;
+        public float yOffset = 0f;
     }
 
     [Header("Collectibles")]
     [SerializeField] private CollectibleEntry[] collectiblePrefabs;
     [SerializeField][Range(0f, 1f)] private float collectibleChance = 0.5f;
-    [SerializeField] private float collectibleY = 0.8f;
+
+    [Header("Obstacles")]
+    [SerializeField] private CollectibleEntry[] obstaclePrefabs;
+    [SerializeField][Range(0f, 1f)] private float obstacleChance = 0.3f;
+
+    [Header("Track")]
     [SerializeField] private float laneWidth = 2.5f;
     [SerializeField] private float spawnInterval = 8f;
     [SerializeField] private float lookaheadDistance = 60f;
     [SerializeField] private float despawnDistance = 10f;
 
     private readonly List<GameObject> activeCollectibles = new();
+    private readonly List<GameObject> activeObstacles = new();
     private float furthestSpawnedZ;
     private float worldSpeed;
 
     public float WorldSpeed => worldSpeed;
 
-    public void ResetSpeed() => worldSpeed = initialSpeed;
+    public void ResetSpeed() => worldSpeed *= 0.9f;
 
     private void Start()
     {
@@ -69,6 +76,14 @@ public class TrackManager : MonoBehaviour
             pos.z -= scroll;
             c.transform.localPosition = pos;
         }
+
+        foreach (GameObject o in activeObstacles)
+        {
+            if (o == null) continue;
+            Vector3 pos = o.transform.localPosition;
+            pos.z -= scroll;
+            o.transform.localPosition = pos;
+        }
     }
 
     private void DespawnBehind()
@@ -82,39 +97,69 @@ public class TrackManager : MonoBehaviour
                 activeCollectibles.RemoveAt(i);
             }
         }
+
+        for (int i = activeObstacles.Count - 1; i >= 0; i--)
+        {
+            GameObject o = activeObstacles[i];
+            if (o == null || o.transform.localPosition.z < -despawnDistance)
+            {
+                if (o != null) Destroy(o);
+                activeObstacles.RemoveAt(i);
+            }
+        }
     }
 
     private void SpawnStrip(float centerZ)
     {
+        bool[] laneHasObstacle = new bool[5];
+
+        if (obstaclePrefabs != null && obstaclePrefabs.Length > 0)
+        {
+            for (int lane = 0; lane < 5; lane++)
+            {
+                if (UnityEngine.Random.value > obstacleChance) continue;
+
+                float x = (lane - 2) * laneWidth;
+                float zOffset = UnityEngine.Random.Range(-spawnInterval * 0.3f, spawnInterval * 0.3f);
+                CollectibleEntry obstacleEntry = PickWeighted(obstaclePrefabs);
+                GameObject o = Instantiate(obstacleEntry.prefab, transform);
+                o.transform.localPosition = new Vector3(x, obstacleEntry.yOffset, centerZ + zOffset);
+                activeObstacles.Add(o);
+                laneHasObstacle[lane] = true;
+            }
+        }
+
         if (collectiblePrefabs == null || collectiblePrefabs.Length == 0) return;
 
-        for (int lane = 0; lane < 3; lane++)
+        for (int lane = 0; lane < 5; lane++)
         {
+            if (laneHasObstacle[lane]) continue;
             if (UnityEngine.Random.value > collectibleChance) continue;
 
-            float x = (lane - 1) * laneWidth;
+            float x = (lane - 2) * laneWidth;
             float zOffset = UnityEngine.Random.Range(-spawnInterval * 0.3f, spawnInterval * 0.3f);
-            GameObject c = Instantiate(PickWeightedCollectible().prefab, transform);
-            c.transform.localPosition = new Vector3(x, collectibleY, centerZ + zOffset);
+            CollectibleEntry collectibleEntry = PickWeighted(collectiblePrefabs);
+            GameObject c = Instantiate(collectibleEntry.prefab, transform);
+            c.transform.localPosition = new Vector3(x, collectibleEntry.yOffset, centerZ + zOffset);
             activeCollectibles.Add(c);
         }
     }
 
-    private CollectibleEntry PickWeightedCollectible()
+    private CollectibleEntry PickWeighted(CollectibleEntry[] entries)
     {
         float total = 0f;
-        foreach (var entry in collectiblePrefabs)
+        foreach (var entry in entries)
             total += entry.weight;
 
         float roll = UnityEngine.Random.Range(0f, total);
         float cumulative = 0f;
-        foreach (var entry in collectiblePrefabs)
+        foreach (var entry in entries)
         {
             cumulative += entry.weight;
             if (roll < cumulative)
                 return entry;
         }
 
-        return collectiblePrefabs[collectiblePrefabs.Length - 1];
+        return entries[entries.Length - 1];
     }
 }

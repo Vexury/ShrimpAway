@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6669431807445808871}
   - component: {fileID: 939669339909073377}
-  - component: {fileID: 3916145756624561626}
   m_Layer: 0
   m_Name: Crab
   m_TagString: Untagged
@@ -55,21 +54,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 0.23721297}
   m_Center: {x: 0, y: 0, z: 0.0032542571}
---- !u!114 &3916145756624561626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4534047593310970940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a546bce5820aed6448cc6ccb4bb06d5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Collectible
-  hoverAmplitude: 0
-  hoverSpeed: 0
-  spinSpeed: 0
 --- !u!1 &6281991102363939138
 GameObject:
   m_ObjectHideFlags: 0
