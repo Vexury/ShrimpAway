@@ -6,6 +6,7 @@ public class SandTrail : MonoBehaviour
     [SerializeField] private TrackManager trackManager;
     [SerializeField] private RollerController roller;
     [SerializeField] private GameObject markPrefab;
+    [SerializeField] private GameObject sandVFX;
     [SerializeField] private float spawnEvery = 0.4f;
     [SerializeField] private float groundY = 0.01f;
     [SerializeField] private int maxMarks = 20;
@@ -15,6 +16,8 @@ public class SandTrail : MonoBehaviour
 
     private void Update()
     {
+        if (sandVFX != null) sandVFX.SetActive(roller.IsGrounded);
+
         if (!roller.IsGrounded) return;
 
         accumulator += trackManager.WorldSpeed * Time.deltaTime;
