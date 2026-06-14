@@ -11,6 +11,7 @@ public class Collectible : MonoBehaviour
     [SerializeField] private float hoverSpeed = 1.5f;
     [SerializeField] private float spinSpeed = 90f;
     [SerializeField] private CollectibleType collectibleType = CollectibleType.Coin;
+    [SerializeField] private AudioClip collectSound;
 
     public static event Action<CollectibleType, int> OnCollected;
     private static readonly Dictionary<CollectibleType, int> counts = new();
@@ -50,6 +51,7 @@ public class Collectible : MonoBehaviour
         counts.TryGetValue(collectibleType, out int current);
         counts[collectibleType] = current + 1;
         OnCollected?.Invoke(collectibleType, counts[collectibleType]);
+        AudioManager.Instance.PlaySFXWithPitchVariation(collectSound);
         Destroy(gameObject);
     }
 }

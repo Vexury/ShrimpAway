@@ -39,7 +39,6 @@ public class AudioManager : Singleton<AudioManager>
             sfxSource = CreateAudioSource("SFXSource");
         }
 
-        LoadVolumes();
         ApplyVolumes();
     }
 
@@ -192,28 +191,24 @@ public class AudioManager : Singleton<AudioManager>
     {
         masterVolume = Mathf.Clamp01(volume);
         ApplyVolumes();
-        SaveVolumes();
     }
 
     public void SetMusicVolume(float volume)
     {
         musicVolume = Mathf.Clamp01(volume);
         ApplyVolumes();
-        SaveVolumes();
     }
 
     public void SetAmbienceVolume(float volume)
     {
         ambienceVolume = Mathf.Clamp01(volume);
         ApplyVolumes();
-        SaveVolumes();
     }
 
     public void SetSFXVolume(float volume)
     {
         sfxVolume = Mathf.Clamp01(volume);
         ApplyVolumes();
-        SaveVolumes();
     }
 
     private void ApplyVolumes()
@@ -221,23 +216,6 @@ public class AudioManager : Singleton<AudioManager>
         musicSource.volume = musicVolume * masterVolume;
         ambienceSource.volume = ambienceVolume * masterVolume;
         sfxSource.volume = sfxVolume * masterVolume;
-    }
-
-    private void SaveVolumes()
-    {
-        PlayerPrefs.SetFloat("MasterVolume", masterVolume);
-        PlayerPrefs.SetFloat("MusicVolume", musicVolume);
-        PlayerPrefs.SetFloat("AmbienceVolume", ambienceVolume);
-        PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
-        PlayerPrefs.Save();
-    }
-
-    private void LoadVolumes()
-    {
-        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
-        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
-        ambienceVolume = PlayerPrefs.GetFloat("AmbienceVolume", 1f);
-        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
     }
 
     #endregion

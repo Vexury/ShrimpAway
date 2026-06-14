@@ -123,7 +123,7 @@ public class RollerController : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             foreach (var r in playerRenderers) r.material.color = Color.red;
-            if (impulseSource != null) impulseSource.GenerateImpulseWithForce(impulseForce);
+            if (impulseSource != null) impulseSource.GenerateImpulseWithForce(impulseForce / (i + 1));
             yield return new WaitForSeconds(blinkInterval);
             foreach (var r in playerRenderers) r.material.color = originalColor;
             yield return new WaitForSeconds(blinkInterval);
