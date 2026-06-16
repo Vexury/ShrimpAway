@@ -54,8 +54,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.061729, y: 2.045267, z: 0.38271636}
-  m_Center: {x: 0.00000014901161, y: -0.008230284, z: -0.0041149557}
+  m_Size: {x: 2.061729, y: 2.045267, z: 0.94548345}
+  m_Center: {x: 0.00000014901161, y: -0.008230284, z: -0.0041148625}
 --- !u!114 &5248740838360419810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,8 +71,9 @@ MonoBehaviour:
   hoverAmplitude: 0.2
   hoverSpeed: 1.5
   spinSpeed: 90
-  collectibleType: 0
   collectSound: {fileID: 8300000, guid: 8dd1369ec0551c747a00d0dc607cf679, type: 3}
+  collectibleType: 0
+  magnetable: 1
   yellowCoin: {fileID: 492551593889905037}
   redCoin: {fileID: 1205562245287803463}
 --- !u!1001 &726360201666561244

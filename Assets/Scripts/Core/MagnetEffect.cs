@@ -24,7 +24,7 @@ public class MagnetEffect : MonoBehaviour
         foreach (Collider hit in hits)
         {
             Collectible c = hit.GetComponent<Collectible>();
-            if (c == null) continue;
+            if (c == null || !c.Magnetable) continue;
 
             c.MagnetPulled = true;
             c.transform.position = Vector3.MoveTowards(

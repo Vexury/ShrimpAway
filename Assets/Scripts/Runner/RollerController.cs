@@ -9,7 +9,8 @@ public class RollerController : MonoBehaviour
     [SerializeField] private InputReader inputReader;
     [SerializeField] private Transform visualRoot;
     [SerializeField] private TrackManager trackManager;
-    [SerializeField] private Renderer[] playerRenderers;
+    [SerializeField] private Renderer[] bodyRenderers;
+    [SerializeField] private Renderer[] armorRenderers;
     [SerializeField] private float blinkInterval = 0.1f;
     [SerializeField] private CinemachineImpulseSource impulseSource;
     [SerializeField] private float impulseForce = 1f;
@@ -39,7 +40,8 @@ public class RollerController : MonoBehaviour
     private float targetX;
     private float laneVelocity;
     private float prevMoveX;
-    private Color originalColor;
+    private Color originalBodyColor;
+    private Color originalArmorColor;
     private float impulseLastFiredTime = float.MinValue;
     private float rollAngle;
     private float currentLeanY;
@@ -59,8 +61,24 @@ public class RollerController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        if (playerRenderers != null && playerRenderers.Length > 0)
-            originalColor = playerRenderers[0].material.color;
+        if (bodyRenderers != null && bodyRenderers.Length > 0)
+        {
+            originalBodyColor = bodyRenderers[0].material.color;
+            if (PlayerConfig.BodyColor.HasValue)
+            {
+                originalBodyColor = PlayerConfig.BodyColor.Value;
+                foreach (var r in bodyRenderers) r.material.color = originalBodyColor;
+            }
+        }
+        if (armorRenderers != null && armorRenderers.Length > 0)
+        {
+            originalArmorColor = armorRenderers[0].material.color;
+            if (PlayerConfig.ArmorColor.HasValue)
+            {
+                originalArmorColor = PlayerConfig.ArmorColor.Value;
+                foreach (var r in armorRenderers) r.material.color = originalArmorColor;
+            }
+        }
         rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionZ;
 
         targetX = LaneToX(currentLane);
@@ -94,6 +112,9 @@ public class RollerController : MonoBehaviour
     {
         RollVisual();
         UpdateRollAudio();
+        if (UnityEngine.InputSystem.Keyboard.current != null &&
+            UnityEngine.InputSystem.Keyboard.current[UnityEngine.InputSystem.Key.M].wasPressedThisFrame)
+            CoinWallet.Add(1000);
     }
 
     private void UpdateRollAudio()
@@ -167,10 +188,12 @@ public class RollerController : MonoBehaviour
     {
         for (int i = 0; i < 3; i++)
         {
-            foreach (var r in playerRenderers) r.material.color = Color.red;
+            foreach (var r in bodyRenderers)  r.material.color = Color.red;
+            foreach (var r in armorRenderers) r.material.color = Color.red;
             if (impulseSource != null) impulseSource.GenerateImpulseWithForce(impulseForce / (i + 1));
             yield return new WaitForSeconds(blinkInterval);
-            foreach (var r in playerRenderers) r.material.color = originalColor;
+            foreach (var r in bodyRenderers)  r.material.color = originalBodyColor;
+            foreach (var r in armorRenderers) r.material.color = originalArmorColor;
             yield return new WaitForSeconds(blinkInterval);
         }
     }
@@ -184,7 +207,7 @@ public class RollerController : MonoBehaviour
         if (Time.time - impulseLastFiredTime <= impulseCooldown) return;
 
         impulseLastFiredTime = Time.time;
-        if (playerRenderers != null && playerRenderers.Length > 0)
+        if ((bodyRenderers != null && bodyRenderers.Length > 0) || (armorRenderers != null && armorRenderers.Length > 0))
             StartCoroutine(FlashRed());
     }
 

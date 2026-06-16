@@ -13,12 +13,14 @@ public class PlayerHUD : MonoBehaviour
     {
         Collectible.OnCollected += OnCollected;
         StreakManager.OnRankChanged += OnRankChanged;
+        CoinWallet.OnTotalChanged += OnWalletChanged;
     }
 
     private void OnDisable()
     {
         Collectible.OnCollected -= OnCollected;
         StreakManager.OnRankChanged -= OnRankChanged;
+        CoinWallet.OnTotalChanged -= OnWalletChanged;
     }
 
     private void Start()
@@ -36,6 +38,11 @@ public class PlayerHUD : MonoBehaviour
     {
         if (type == CollectibleType.Coin && coinLabel != null)
             coinLabel.text = (CoinWallet.Total + count).ToString();
+    }
+
+    private void OnWalletChanged(int total)
+    {
+        if (coinLabel != null) coinLabel.text = total.ToString();
     }
 
     private void OnRankChanged(string rank, string name)

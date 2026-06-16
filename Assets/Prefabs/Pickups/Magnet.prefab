@@ -53,8 +53,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.0701842, y: 2.0482316, z: 0.47862875}
-  m_Center: {x: -0.0027447566, y: 0.24970934, z: 0.0027439557}
+  m_Size: {x: 2.0701842, y: 2.0482316, z: 1.5059698}
+  m_Center: {x: -0.002744794, y: 0.24970937, z: 0.008347511}
 --- !u!114 &5318900379062560317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,11 +67,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6571ae89266eab847a13ab39566ec9d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MagnetPickup
-  duration: 5
   hoverAmplitude: 0.2
   hoverSpeed: 1.5
   spinSpeed: 90
   collectSound: {fileID: 8300000, guid: 4dbe0ebb053070b43af04f19b4ab1def, type: 3}
+  duration: 5
 --- !u!1001 &8841732025862326030
 PrefabInstance:
   m_ObjectHideFlags: 0

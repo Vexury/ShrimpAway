@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1000 m
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8d670ba700a7fbe459d1057340030ad6, type: 2}
-  m_sharedMaterial: {fileID: -2127371704722673473, guid: 8d670ba700a7fbe459d1057340030ad6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e6f408e818a09f49a837ae3b47ccbd7, type: 2}
+  m_sharedMaterial: {fileID: 4372717591720278735, guid: 0e6f408e818a09f49a837ae3b47ccbd7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -204,8 +204,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8d670ba700a7fbe459d1057340030ad6, type: 2}
-  m_sharedMaterial: {fileID: -2127371704722673473, guid: 8d670ba700a7fbe459d1057340030ad6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e6f408e818a09f49a837ae3b47ccbd7, type: 2}
+  m_sharedMaterial: {fileID: 4372717591720278735, guid: 0e6f408e818a09f49a837ae3b47ccbd7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -406,8 +406,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: '#1'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8d670ba700a7fbe459d1057340030ad6, type: 2}
-  m_sharedMaterial: {fileID: -2127371704722673473, guid: 8d670ba700a7fbe459d1057340030ad6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e6f408e818a09f49a837ae3b47ccbd7, type: 2}
+  m_sharedMaterial: {fileID: 4372717591720278735, guid: 0e6f408e818a09f49a837ae3b47ccbd7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -557,9 +557,9 @@ MonoBehaviour:
   nameLabel: {fileID: 624812340027542494}
   scoreLabel: {fileID: 4819743555140454360}
   devNames:
-  - Vex
   - Cxbane
   - Gabriel
+  - Vexury
   devBadge: {fileID: 5387773464514855498}
   devShimmerColor: {r: 1, g: 0, b: 0.68007267, a: 1}
   rank1Color: {r: 1, g: 0.84, b: 0, a: 1}
@@ -635,8 +635,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: dev
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8d670ba700a7fbe459d1057340030ad6, type: 2}
-  m_sharedMaterial: {fileID: -2127371704722673473, guid: 8d670ba700a7fbe459d1057340030ad6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e6f408e818a09f49a837ae3b47ccbd7, type: 2}
+  m_sharedMaterial: {fileID: 4372717591720278735, guid: 0e6f408e818a09f49a837ae3b47ccbd7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -660,7 +660,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 22.2
+  m_fontSize: 30.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

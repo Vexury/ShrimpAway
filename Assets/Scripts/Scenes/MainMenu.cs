@@ -21,15 +21,18 @@ public class MainMenu : MonoBehaviour
     private string[] leaderboardNames = Array.Empty<string>();
     private bool leaderboardReady = false;
     private string originalName;
+    private string pendingName;
 
     private void Start()
     {
         if (bestDistanceLabel != null)
             bestDistanceLabel.text = $"{HighscoreManager.BestDistance:0} m";
 
+        pendingName = HighscoreManager.PlayerName;
+
         if (nameInput != null)
         {
-            nameInput.text = HighscoreManager.PlayerName;
+            nameInput.text = pendingName;
             nameInput.onValueChanged.AddListener(OnNameChanged);
         }
 
@@ -45,8 +48,6 @@ public class MainMenu : MonoBehaviour
             leaderboardReady = true;
             SetPlayButtonState(HighscoreManager.PlayerName);
         }
-
-        shopScreen.Show();
     }
 
     private void OnLeaderboardFetched(DreamLoService.Entry[] entries)
@@ -72,7 +73,7 @@ public class MainMenu : MonoBehaviour
 
     private void OnNameChanged(string value)
     {
-        HighscoreManager.PlayerName = value;
+        pendingName = value;
         SetPlayButtonState(value);
     }
 
@@ -115,7 +116,11 @@ public class MainMenu : MonoBehaviour
             Instantiate(leaderboardRowPrefab, leaderboardContainer).Populate(entries[i].Name, entries[i].Score, i + 1);
     }
 
-    public void OnPlayClicked() => SceneController.Instance.LoadNextScene();
+    public void OnPlayClicked()
+    {
+        HighscoreManager.PlayerName = pendingName;
+        SceneController.Instance.LoadNextScene();
+    }
 
     public void OnShopClicked() => shopScreen.Show();
 

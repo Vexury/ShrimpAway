@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edd58c47e1fb8874aa1dd0377dcaa7f1, type: 3}
   m_Name: UpgradeConfig
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeConfig
-  headStartCosts: 0a0000000a0000000a0000000a000000
-  hpBoostCosts: 0a000000
-  coinBoosterCosts: 0a0000000a0000000a0000000a0000000a000000
-  extraLifeCosts: 0a000000
+  headStartCosts: d0070000a00f0000401f0000803e0000
+  hpBoostCosts: b80b0000
+  coinBoosterCosts: f4010000dc050000b80b0000881300004c1d0000
+  extraLifeCosts: 88130000

@@ -161,4 +161,7 @@ MonoBehaviour:
   hoverSpeed: 1.5
   spinSpeed: 0
   collectibleType: 1
+  magnetable: 0
   collectSound: {fileID: 8300000, guid: a3267d26184f6684a82d2086c37b21ac, type: 3}
+  yellowCoin: {fileID: 0}
+  redCoin: {fileID: 0}
