@@ -1,10 +1,13 @@
+using System;
 using UnityEngine;
 
 public class Flipbook : MonoBehaviour
 {
     [SerializeField] MeshRenderer meshRenderer;
     [SerializeField] Sprite[] flipbookSprites;
-    [SerializeField] float interval = 0.2f;
+    [SerializeField] float interval = 0.25f;
+
+    public event Action OnLastFrame;
 
     float timer;
     int index;
@@ -26,6 +29,9 @@ public class Flipbook : MonoBehaviour
             block.SetTexture(BaseMapID, flipbookSprites[index].texture);
             meshRenderer.SetPropertyBlock(block);
             timer = 0f;
+
+            if (index == flipbookSprites.Length - 1)
+                OnLastFrame?.Invoke();
         }
     }
 }

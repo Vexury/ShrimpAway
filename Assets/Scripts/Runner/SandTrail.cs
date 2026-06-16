@@ -14,12 +14,15 @@ public class SandTrail : MonoBehaviour
     private readonly List<SandTrailMark> marks = new();
     private readonly Queue<SandTrailMark> _pool = new();
     private float accumulator;
+    private Transform _container;
 
     private void Start()
     {
+        _container = new GameObject("SandTrailMarks").transform;
+
         for (int i = 0; i < maxMarks; i++)
         {
-            GameObject obj = Instantiate(markPrefab);
+            GameObject obj = Instantiate(markPrefab, _container);
             SandTrailMark mark = obj.GetComponent<SandTrailMark>();
             mark.Init(trackManager);
             obj.SetActive(false);

@@ -7,8 +7,13 @@ public class PalmTreeSpawner : MonoBehaviour
     [SerializeField] private TrackManager trackManager;
     [SerializeField] private float sideXMin = 6.5f;
     [SerializeField] private float sideXMax = 12f;
+    [SerializeField] private float stripInterval = 8f;
+    [SerializeField] private int treesPerSideMin = 1;
+    [SerializeField] private int treesPerSideMax = 2;
+    [SerializeField] private float scaleMin = 0.8f;
+    [SerializeField] private float scaleMax = 1.4f;
+    [SerializeField] private float zJitter = 0.3f;
 
-    private const float StripInterval = 8f;
     private const float LookaheadDistance = 60f;
     private const float DespawnDistance = 10f;
 
@@ -35,7 +40,7 @@ public class PalmTreeSpawner : MonoBehaviour
 
     private void Start()
     {
-        furthestSpawnedZ = -StripInterval;
+        furthestSpawnedZ = -stripInterval;
         FillAhead();
     }
 
@@ -52,25 +57,25 @@ public class PalmTreeSpawner : MonoBehaviour
     {
         while (furthestSpawnedZ < LookaheadDistance)
         {
-            furthestSpawnedZ += StripInterval;
+            furthestSpawnedZ += stripInterval;
             SpawnStrip(furthestSpawnedZ);
         }
     }
 
     private void SpawnStrip(float centerZ)
     {
-        int count = Random.Range(1, 3);
+        int count = Random.Range(treesPerSideMin, treesPerSideMax + 1);
         for (int side = -1; side <= 1; side += 2)
         {
             for (int i = 0; i < count; i++)
             {
                 float x = side * Random.Range(sideXMin, sideXMax);
-                float z = centerZ + Random.Range(-StripInterval * 0.3f, StripInterval * 0.3f);
+                float z = centerZ + Random.Range(-stripInterval * zJitter, stripInterval * zJitter);
 
                 GameObject tree = GetTree();
                 tree.transform.position = new Vector3(x, palmPrefab.transform.position.y, z);
                 tree.transform.rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
-                tree.transform.localScale = Vector3.one * Random.Range(0.8f, 1.4f);
+                tree.transform.localScale = Vector3.one * Random.Range(scaleMin, scaleMax);
                 activeTrees.Add(tree);
             }
         }

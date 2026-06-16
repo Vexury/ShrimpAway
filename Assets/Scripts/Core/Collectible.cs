@@ -12,6 +12,8 @@ public class Collectible : MonoBehaviour
     [SerializeField] private float spinSpeed = 90f;
     [SerializeField] private CollectibleType collectibleType = CollectibleType.Coin;
     [SerializeField] private AudioClip collectSound;
+    [SerializeField] private GameObject yellowCoin;
+    [SerializeField] private GameObject redCoin;
 
     public static event Action<CollectibleType, int> OnCollected;
     private static readonly Dictionary<CollectibleType, int> counts = new();
@@ -19,7 +21,15 @@ public class Collectible : MonoBehaviour
     public static int GetCount(CollectibleType type) => counts.TryGetValue(type, out int n) ? n : 0;
     public static void ResetCounts() => counts.Clear();
 
+    private int coinValue = 1;
     private float baseY;
+
+    public void SetRed(bool red)
+    {
+        coinValue = red ? 3 : 1;
+        if (yellowCoin != null) yellowCoin.SetActive(!red);
+        if (redCoin != null) redCoin.SetActive(red);
+    }
 
     private void Awake()
     {
@@ -50,7 +60,7 @@ public class Collectible : MonoBehaviour
         if (other.GetComponent<PlayerController>() == null && other.GetComponent<RollerController>() == null) return;
 
         counts.TryGetValue(collectibleType, out int current);
-        counts[collectibleType] = current + 1;
+        counts[collectibleType] = current + (collectibleType == CollectibleType.Coin ? coinValue : 1);
         OnCollected?.Invoke(collectibleType, counts[collectibleType]);
         AudioManager.Instance.PlaySFXWithPitchVariation(collectSound);
         Destroy(gameObject);

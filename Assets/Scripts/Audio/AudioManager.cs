@@ -1,9 +1,11 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.Rendering;
 
 public class AudioManager : Singleton<AudioManager>
 {
     [Header("Audio Sources")]
+    [SerializeField] private AudioClip buttonClickClip;
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource ambienceSource;
     [SerializeField] private AudioSource sfxSource;
@@ -69,14 +71,25 @@ public class AudioManager : Singleton<AudioManager>
         return source;
     }
 
+    #region UI
+    public void PlayButtonClick()
+    {
+        if (buttonClickClip != null)
+        {
+            PlaySFX(buttonClickClip);
+        }
+    }
+    #endregion
+
     #region Music
 
-    public void PlayMusic(AudioClip clip, bool loop = true)
+    public void PlayMusic(AudioClip clip, bool loop = true, float volumeScale = 1f)
     {
         if (musicSource.clip == clip && musicSource.isPlaying) return;
 
         musicSource.clip = clip;
         musicSource.loop = loop;
+        musicSource.volume = masterVolume * musicVolume * volumeScale;
         musicSource.Play();
     }
 
@@ -116,16 +129,27 @@ public class AudioManager : Singleton<AudioManager>
         musicFadeCoroutine = StartCoroutine(FadeInCoroutine(musicSource, duration, musicVolume * masterVolume));
     }
 
+    public void FadeInMusicWithPitch(AudioClip clip, float duration, float volumeScale = 1f)
+    {
+        if (musicFadeCoroutine != null) StopCoroutine(musicFadeCoroutine);
+        musicSource.clip = clip;
+        musicSource.volume = 0f;
+        musicSource.pitch = 0f;
+        musicSource.Play();
+        musicFadeCoroutine = StartCoroutine(FadeInWithPitchCoroutine(musicSource, duration, masterVolume * musicVolume * volumeScale));
+    }
+
     #endregion
 
     #region Ambience
 
-    public void PlayAmbience(AudioClip clip, bool loop = true)
+    public void PlayAmbience(AudioClip clip, bool loop = true, float volumeScale = 1f)
     {
         if (ambienceSource.clip == clip && ambienceSource.isPlaying) return;
 
         ambienceSource.clip = clip;
         ambienceSource.loop = loop;
+        ambienceSource.volume = masterVolume * ambienceVolume * volumeScale;
         ambienceSource.Play();
     }
 
@@ -165,6 +189,16 @@ public class AudioManager : Singleton<AudioManager>
         ambienceFadeCoroutine = StartCoroutine(FadeInCoroutine(ambienceSource, duration, ambienceVolume * masterVolume));
     }
 
+    public void FadeInAmbienceWithPitch(AudioClip clip, float duration, float volumeScale = 1f)
+    {
+        if (ambienceFadeCoroutine != null) StopCoroutine(ambienceFadeCoroutine);
+        ambienceSource.clip = clip;
+        ambienceSource.volume = 0f;
+        ambienceSource.pitch = 0f;
+        ambienceSource.Play();
+        ambienceFadeCoroutine = StartCoroutine(FadeInWithPitchCoroutine(ambienceSource, duration, masterVolume * ambienceVolume * volumeScale));
+    }
+
     #endregion
 
     #region SFX
@@ -181,10 +215,21 @@ public class AudioManager : Singleton<AudioManager>
         sfxSource.PlayOneShot(clip, volumeScale * sfxVolume * masterVolume);
     }
 
-    public void PlaySFXAtPoint(AudioClip clip, Vector3 position)
+    public void PlaySFXAtPoint(AudioClip clip, Vector3 position, float minDistance = 10f, float maxDistance = 50f)
     {
         if (clip == null) return;
-        AudioSource.PlayClipAtPoint(clip, position, sfxVolume * masterVolume);
+
+        GameObject go = new GameObject("TempSFX");
+        go.transform.position = position;
+        AudioSource src = go.AddComponent<AudioSource>();
+        src.clip = clip;
+        src.spatialBlend = 1f;
+        src.minDistance = minDistance;
+        src.maxDistance = maxDistance;
+        src.volume = sfxVolume * masterVolume;
+        src.Play();
+
+        Destroy(go, clip.length);
     }
 
     public void PlaySFXWithPitchVariation(AudioClip clip, float minPitch = 0.9f, float maxPitch = 1.1f, float volumeScale = 1f)
@@ -295,6 +340,23 @@ public class AudioManager : Singleton<AudioManager>
 
         source.Stop();
         source.volume = startVolume;
+    }
+
+    private IEnumerator FadeInWithPitchCoroutine(AudioSource source, float duration, float targetVolume)
+    {
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            source.volume = Mathf.Lerp(0f, targetVolume, t);
+            source.pitch  = Mathf.Lerp(0f, 1f, t);
+            yield return null;
+        }
+
+        source.volume = targetVolume;
+        source.pitch  = 1f;
     }
 
     private IEnumerator FadeInCoroutine(AudioSource source, float duration, float targetVolume)

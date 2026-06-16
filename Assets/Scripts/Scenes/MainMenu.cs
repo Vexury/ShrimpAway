@@ -11,6 +11,9 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private TMP_Text playButtonLabel;
     [SerializeField] private TMP_Text bestDistanceLabel;
 
+    [Header("Shop")]
+    [SerializeField] private ShopScreen shopScreen;
+
     [Header("Global Leaderboard")]
     [SerializeField] private Transform leaderboardContainer;
     [SerializeField] private LeaderboardRow leaderboardRowPrefab;
@@ -42,6 +45,8 @@ public class MainMenu : MonoBehaviour
             leaderboardReady = true;
             SetPlayButtonState(HighscoreManager.PlayerName);
         }
+
+        shopScreen.Show();
     }
 
     private void OnLeaderboardFetched(DreamLoService.Entry[] entries)
@@ -111,6 +116,8 @@ public class MainMenu : MonoBehaviour
     }
 
     public void OnPlayClicked() => SceneController.Instance.LoadNextScene();
+
+    public void OnShopClicked() => shopScreen.Show();
 
     public void OnSettingsClicked() { }
 

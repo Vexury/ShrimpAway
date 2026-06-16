@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6669431807445808871}
   - component: {fileID: 939669339909073377}
+  - component: {fileID: 2971912308043001176}
   m_Layer: 0
   m_Name: Crab
   m_TagString: Obstacle
@@ -27,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 3.2, y: 3.2, z: 3.2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7066347102224121707}
@@ -52,8 +53,24 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.4, y: 0.6, z: 0.05}
-  m_Center: {x: 0, y: 0, z: 0.0032542571}
+  m_Size: {x: 0.26547036, y: 0.5696224, z: 0.05}
+  m_Center: {x: -0.028207993, y: -0.015188933, z: 0.0032542583}
+--- !u!114 &2971912308043001176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4534047593310970940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fd958481af357b44afef17099259124, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CrabObstacle
+  flipbook: {fileID: 6923078345131091857}
+  sfxClip: {fileID: 8300000, guid: 0924c97f63118e3459b4a118c1b4435b, type: 3}
+  sfxMinDistance: 2
+  sfxMaxDistance: 5
 --- !u!1 &6281991102363939138
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,4 +180,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7de01eec5940ede4b9e0425d909a50ab, type: 3}
   - {fileID: 21300000, guid: dcd24c5a38ec3aa47a3f0742fd139adf, type: 3}
   - {fileID: 21300000, guid: d557a39be41ad674e8fc7ad4a8b20676, type: 3}
-  interval: 0.2
+  interval: 0.25

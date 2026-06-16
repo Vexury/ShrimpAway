@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BootLoader : MonoBehaviour
 {
-    [SerializeField] private float bootDelay = 0.5f; // Optional: show logo/splash
+    [SerializeField] private float bootDelay = 0.5f;
 
     private void Start()
     {

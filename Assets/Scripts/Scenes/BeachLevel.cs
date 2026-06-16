@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class BeachLevel : MonoBehaviour
@@ -18,6 +19,7 @@ public class BeachLevel : MonoBehaviour
     [SerializeField] private float deathFadeDuration = 1f;
 
     private bool dead;
+    private bool fadingIn;
 
     private void OnEnable()  => PlayerHealth.OnDeath += OnDeath;
     private void OnDisable() => PlayerHealth.OnDeath -= OnDeath;
@@ -28,19 +30,27 @@ public class BeachLevel : MonoBehaviour
 
         if (fadeIn)
         {
-            if (music != null)    AudioManager.Instance.FadeInMusic(music, fadeDuration);
-            if (ambience != null) AudioManager.Instance.FadeInAmbience(ambience, fadeDuration);
+            if (music != null)    AudioManager.Instance.FadeInMusicWithPitch(music, fadeDuration, 0.5f);
+            if (ambience != null) AudioManager.Instance.FadeInAmbienceWithPitch(ambience, fadeDuration, 5.0f);
+            StartCoroutine(ClearFadeIn(fadeDuration));
+            fadingIn = true;
         }
         else
         {
-            if (music != null)    AudioManager.Instance.PlayMusic(music);
-            if (ambience != null) AudioManager.Instance.PlayAmbience(ambience);
+            if (music != null)    AudioManager.Instance.PlayMusic(music, true, 0.5f);
+            if (ambience != null) AudioManager.Instance.PlayAmbience(ambience, true, 5.0f);
         }
+    }
+
+    private IEnumerator ClearFadeIn(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        fadingIn = false;
     }
 
     private void Update()
     {
-        if (dead || trackManager == null || AudioManager.Instance == null) return;
+        if (dead || fadingIn || trackManager == null || AudioManager.Instance == null) return;
 
         float t = Mathf.InverseLerp(trackManager.InitialSpeed, trackManager.MaxSpeed, trackManager.WorldSpeed);
         AudioManager.Instance.SetMusicPitch(Mathf.Lerp(pitchMin, pitchMax, pitchCurve.Evaluate(t)));

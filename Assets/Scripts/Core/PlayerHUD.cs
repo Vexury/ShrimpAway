@@ -23,7 +23,7 @@ public class PlayerHUD : MonoBehaviour
 
     private void Start()
     {
-        if (coinLabel != null) coinLabel.text = "0";
+        if (coinLabel != null) coinLabel.text = CoinWallet.Total.ToString();
     }
 
     private void Update()
@@ -35,7 +35,7 @@ public class PlayerHUD : MonoBehaviour
     private void OnCollected(CollectibleType type, int count)
     {
         if (type == CollectibleType.Coin && coinLabel != null)
-            coinLabel.text = count.ToString();
+            coinLabel.text = (CoinWallet.Total + count).ToString();
     }
 
     private void OnRankChanged(string rank, string name)

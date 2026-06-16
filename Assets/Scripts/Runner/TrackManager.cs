@@ -72,7 +72,7 @@ public class TrackManager : MonoBehaviour
         _prefabLookup.Remove(instance);
         instance.SetActive(false);
         Collectible col = instance.GetComponent<Collectible>();
-        if (col != null) col.MagnetPulled = false;
+        if (col != null) { col.MagnetPulled = false; col.SetRed(false); }
         if (!_pools.TryGetValue(prefab, out Queue<GameObject> queue))
         {
             queue = new Queue<GameObject>();
@@ -83,15 +83,28 @@ public class TrackManager : MonoBehaviour
 
     private void Start()
     {
-        worldSpeed = initialSpeed;
-        furthestSpawnedZ = initialClearDistance;
+        int headStart = UpgradeManager.HeadStartDistance;
+        worldSpeed        = headStart > 0 ? SpeedAtDistance(headStart) : initialSpeed;
+        furthestSpawnedZ  = initialClearDistance;
+        DistanceTravelled = headStart;
         FillAhead();
+    }
+
+    private float SpeedAtDistance(float distance)
+    {
+        if (acceleration <= 0f) return initialSpeed;
+        float tMax   = (maxSpeed - initialSpeed) / acceleration;
+        float dAtMax = initialSpeed * tMax + 0.5f * acceleration * tMax * tMax;
+        if (distance >= dAtMax) return maxSpeed;
+        float t = (-initialSpeed + Mathf.Sqrt(initialSpeed * initialSpeed + 2f * acceleration * distance)) / acceleration;
+        return initialSpeed + acceleration * t;
     }
 
     private void Update()
     {
         worldSpeed = Mathf.MoveTowards(worldSpeed, maxSpeed, acceleration * Time.deltaTime);
         DistanceTravelled += worldSpeed * Time.deltaTime;
+
         specialTimer += Time.deltaTime;
         float scroll = worldSpeed * Time.deltaTime;
         furthestSpawnedZ -= scroll;
@@ -194,6 +207,7 @@ public class TrackManager : MonoBehaviour
                     GameObject c = GetPooled(coinEntry.prefab);
                     _prefabLookup[c] = coinEntry.prefab;
                     c.transform.localPosition = new Vector3(x, coinEntry.yOffset, startZ + i * step);
+                    c.GetComponent<Collectible>()?.SetRed(UnityEngine.Random.value < UpgradeManager.RedCoinChance);
                     activeCollectibles.Add(c);
                 }
             }

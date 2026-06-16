@@ -103,7 +103,7 @@ public class RollerController : MonoBehaviour
         if (grounded && !wasGrounded)
         { 
             AudioManager.Instance.PlayLoopingSFX(rollClip, 0.3f);
-            if (landClip != null) AudioManager.Instance.PlaySFX(landClip);
+            if (landClip != null) AudioManager.Instance.PlaySFX(landClip, 0.5f);
         }
         else if (!grounded && wasGrounded)
             AudioManager.Instance.StopLoopingSFX();

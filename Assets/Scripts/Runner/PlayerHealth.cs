@@ -18,18 +18,24 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float armorDestroyDelay = 3f;
 
     public static event Action OnDeath;
+    public static event Action OnExtraLifeTriggered;
     public int CurrentHP => currentHP;
     public int MaxHP => maxHP;
 
     private int currentHP;
+    private int baseMaxHP;
     private float lastDamageTime = float.MinValue;
     private int armorIndex;
     private Vector3[] armorLocalPos;
     private Quaternion[] armorLocalRot;
     private Vector3[] armorLocalScale;
 
+    public bool HPBoostIntact => currentHP > baseMaxHP;
+
     private void Awake()
     {
+        baseMaxHP = maxHP;
+        maxHP += UpgradeManager.HPBoostLevel;
         currentHP = maxHP;
 
         if (armorPieces != null)
@@ -43,6 +49,7 @@ public class PlayerHealth : MonoBehaviour
                 armorLocalPos[i]   = armorPieces[i].transform.localPosition;
                 armorLocalRot[i]   = armorPieces[i].transform.localRotation;
                 armorLocalScale[i] = armorPieces[i].transform.localScale;
+                armorPieces[i].SetActive(i < maxHP - 1);
             }
         }
     }
@@ -64,9 +71,13 @@ public class PlayerHealth : MonoBehaviour
         lastDamageTime = Time.time;
         currentHP--;
 
+        if (UpgradeManager.HPBoostLevel > 0 && !UpgradeManager.HPBoostUsedThisRun && currentHP <= baseMaxHP)
+            UpgradeManager.UseHPBoost();
+
         if (AudioManager.Instance != null)
         {
-            AudioClip clip = currentHP <= 0 ? deathClip : damageClip;
+            bool extraLifeSaves = currentHP <= 0 && UpgradeManager.ExtraLifeLevel > 0 && !UpgradeManager.ExtraLifeUsedThisRun;
+            AudioClip clip = currentHP <= 0 && !extraLifeSaves ? deathClip : damageClip;
             if (clip != null) AudioManager.Instance.PlaySFX(clip);
         }
 
@@ -74,7 +85,16 @@ public class PlayerHealth : MonoBehaviour
             LaunchArmor(armorPieces[armorIndex++]);
 
         if (currentHP <= 0)
+        {
+            if (UpgradeManager.ExtraLifeLevel > 0 && !UpgradeManager.ExtraLifeUsedThisRun)
+            {
+                UpgradeManager.UseExtraLife();
+                currentHP = 1;
+                OnExtraLifeTriggered?.Invoke();
+                return;
+            }
             OnDeath?.Invoke();
+        }
     }
 
     private void LaunchArmor(GameObject piece)

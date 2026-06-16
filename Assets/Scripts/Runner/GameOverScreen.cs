@@ -144,10 +144,25 @@ public class GameOverScreen : MonoBehaviour
             p.rt.localRotation = Quaternion.Euler(0f, 0f, p.targetAngle);
     }
 
+    private void CreditWalletAndResetRun()
+    {
+        CoinWallet.Add(Collectible.GetCount(CollectibleType.Coin));
+        UpgradeManager.ResetRunState();
+    }
+
     public void Restart()
     {
+        CreditWalletAndResetRun();
         Time.timeScale = 1f;
         Collectible.ResetCounts();
         SceneController.Instance.ReloadCurrentScene();
+    }
+
+    public void GoToMainMenu()
+    {
+        CreditWalletAndResetRun();
+        Time.timeScale = 1f;
+        Collectible.ResetCounts();
+        SceneController.Instance.LoadScene("MainMenu", true);
     }
 }
