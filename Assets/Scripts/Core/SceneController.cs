@@ -20,21 +20,21 @@ public class SceneController : Singleton<SceneController>
     public void LoadScene(string sceneName, bool fade = false)
     {
         if (isLoading) return;
-        if (fade) StartCoroutine(FadeAndLoad(() => SceneManager.LoadScene(sceneName)));
+        if (fade) StartCoroutine(FadeAndLoad(sceneName));
         else SceneManager.LoadScene(sceneName);
     }
 
     public void LoadScene(int sceneIndex, bool fade = false)
     {
         if (isLoading) return;
-        if (fade) StartCoroutine(FadeAndLoad(() => SceneManager.LoadScene(sceneIndex)));
+        if (fade) StartCoroutine(FadeAndLoad(sceneIndex));
         else SceneManager.LoadScene(sceneIndex);
     }
 
     public void LoadNextScene(bool fade = false)
     {
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings) LoadScene(nextSceneIndex);
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings) LoadScene(nextSceneIndex, fade);
         else Debug.LogWarning("No next scene! This is the last scene in Build Settings.");
     }
 
@@ -87,15 +87,24 @@ public class SceneController : Singleton<SceneController>
         image.raycastTarget = false;
     }
 
-    IEnumerator FadeAndLoad(System.Action load)
+    IEnumerator FadeAndLoad(string sceneName)
     {
         isLoading = true;
         fadeGroup.blocksRaycasts = true;
-
         yield return StartCoroutine(Fade(0f, 1f));
-        load();
+        yield return SceneManager.LoadSceneAsync(sceneName);
         yield return StartCoroutine(Fade(1f, 0f));
+        fadeGroup.blocksRaycasts = false;
+        isLoading = false;
+    }
 
+    IEnumerator FadeAndLoad(int sceneIndex)
+    {
+        isLoading = true;
+        fadeGroup.blocksRaycasts = true;
+        yield return StartCoroutine(Fade(0f, 1f));
+        yield return SceneManager.LoadSceneAsync(sceneIndex);
+        yield return StartCoroutine(Fade(1f, 0f));
         fadeGroup.blocksRaycasts = false;
         isLoading = false;
     }

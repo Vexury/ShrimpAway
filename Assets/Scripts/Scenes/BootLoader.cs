@@ -20,6 +20,6 @@ public class BootLoader : MonoBehaviour
     private IEnumerator LoadFirstScene()
     {
         yield return new WaitForSeconds(bootDelay);
-        SceneController.Instance.LoadNextScene();
+        SceneController.Instance.LoadNextScene(fade: true);
     }
 }

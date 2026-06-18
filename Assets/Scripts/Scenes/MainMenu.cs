@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,11 +22,15 @@ public class MainMenu : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioClip menuMusicLoopClip;
     [SerializeField] private AudioClip menuAmbienceLoopClip;
+    [SerializeField] private float audioFadeInDuration = 2f;
+
+    private const float LeaderboardRefreshInterval = 10f;
 
     private string[] leaderboardNames = Array.Empty<string>();
     private bool leaderboardReady = false;
     private string originalName;
     private string pendingName;
+    private Coroutine refreshCoroutine;
 
     private void Start()
     {
@@ -53,29 +58,40 @@ public class MainMenu : MonoBehaviour
             SetPlayButtonState(HighscoreManager.PlayerName);
         }
 
-        if (menuMusicLoopClip != null) AudioManager.Instance.PlayMusic(menuMusicLoopClip);
-        if (menuAmbienceLoopClip != null) AudioManager.Instance.PlayAmbience(menuAmbienceLoopClip);
+        if (menuMusicLoopClip != null) AudioManager.Instance.FadeInMusic(menuMusicLoopClip, audioFadeInDuration);
+        if (menuAmbienceLoopClip != null) AudioManager.Instance.FadeInAmbience(menuAmbienceLoopClip, audioFadeInDuration);
     }
 
     private void OnLeaderboardFetched(DreamLoService.Entry[] entries)
     {
         leaderboardNames = new string[entries.Length];
         for (int i = 0; i < entries.Length; i++)
-        {
             leaderboardNames[i] = entries[i].Name;
-            //Debug.Log($"[MainMenu] Leaderboard entry {i}: '{entries[i].Name}'");
-        }
 
         leaderboardReady = true;
-        //Debug.Log($"[MainMenu] Leaderboard ready. {leaderboardNames.Length} names loaded.");
         PopulateLeaderboard(entries);
         SetPlayButtonState(nameInput != null ? nameInput.text : HighscoreManager.PlayerName);
+
+        if (refreshCoroutine == null)
+            refreshCoroutine = StartCoroutine(RefreshLoop());
+    }
+
+    private IEnumerator RefreshLoop()
+    {
+        while (true)
+        {
+            yield return new WaitForSecondsRealtime(LeaderboardRefreshInterval);
+            if (DreamLoService.Instance != null)
+                DreamLoService.Instance.FetchLeaderboard(OnLeaderboardFetched);
+        }
     }
 
     private void OnDestroy()
     {
         if (nameInput != null)
             nameInput.onValueChanged.RemoveListener(OnNameChanged);
+        if (refreshCoroutine != null)
+            StopCoroutine(refreshCoroutine);
     }
 
     private void OnNameChanged(string value)
@@ -126,7 +142,7 @@ public class MainMenu : MonoBehaviour
     public void OnPlayClicked()
     {
         HighscoreManager.PlayerName = pendingName;
-        SceneController.Instance.LoadNextScene();
+        SceneController.Instance.LoadNextScene(fade: true);
     }
 
     public void OnShopClicked() => shopScreen.Show();

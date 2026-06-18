@@ -17,6 +17,7 @@ public class BeachLevel : MonoBehaviour
 
     [Header("Death Fade")]
     [SerializeField] private float deathFadeDuration = 1f;
+    [SerializeField] private AudioClip deathClip;
 
     private bool dead;
     private bool fadingIn;
@@ -63,6 +64,7 @@ public class BeachLevel : MonoBehaviour
         AudioManager.Instance.FadeOutMusicWithPitch(deathFadeDuration);
         AudioManager.Instance.FadeOutAmbienceWithPitch(deathFadeDuration);
         AudioManager.Instance.StopLoopingSFX();
+        if (deathClip != null) AudioManager.Instance.PlaySFX(deathClip);
     }
 
     public void GoToMainMenu()
@@ -74,6 +76,6 @@ public class BeachLevel : MonoBehaviour
             AudioManager.Instance.StopAmbience();
             AudioManager.Instance.StopLoopingSFX();
         }
-        SceneController.Instance.LoadScene("MainMenu");
+        SceneController.Instance.LoadScene("MainMenu", fade: true);
     }
 }
