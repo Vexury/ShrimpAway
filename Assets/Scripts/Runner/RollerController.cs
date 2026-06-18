@@ -26,6 +26,7 @@ public class RollerController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float laneWidth = 2.5f;
     [SerializeField] private float laneSwitchTime = 0.15f;
+    [SerializeField] private float minLateralSpeed = 1f;
     [SerializeField] private float sphereRadius = 0.5f;
     [SerializeField] private float jumpForce = 8f;
     [SerializeField] private float gravityScale = 1f;
@@ -39,6 +40,7 @@ public class RollerController : MonoBehaviour
     private int currentLane = 2;
     private float targetX;
     private float laneVelocity;
+    private bool isLaneSwapping;
     private float prevMoveX;
     private Color originalBodyColor;
     private Color originalArmorColor;
@@ -106,6 +108,9 @@ public class RollerController : MonoBehaviour
         ApplyLateralMovement();
         ApplyJump();
         rb.AddForce(Physics.gravity * (gravityScale - 1f) * rb.mass);
+
+        if (isLaneSwapping && Mathf.Abs(rb.position.x - targetX) < 0.05f)
+            isLaneSwapping = false;
     }
 
     private void Update()
@@ -136,6 +141,11 @@ public class RollerController : MonoBehaviour
         float newX = Mathf.SmoothDamp(rb.position.x, targetX, ref laneVelocity, laneSwitchTime);
         Vector3 vel = rb.linearVelocity;
         vel.x = (newX - rb.position.x) / Time.fixedDeltaTime;
+
+        float diff = targetX - rb.position.x;
+        if (Mathf.Abs(diff) > 0.05f)
+            vel.x = Mathf.Sign(diff) * Mathf.Max(Mathf.Abs(vel.x), minLateralSpeed);
+
         rb.linearVelocity = vel;
     }
 
@@ -256,6 +266,7 @@ public class RollerController : MonoBehaviour
         currentLane = Mathf.Clamp(lane, 0, 4);
         if (currentLane != prev)
         {
+            isLaneSwapping = true;
             leanSign = Mathf.Sign(currentLane - prev);
             leanTimer = 0f;
             if (laneSwapClip != null && AudioManager.Instance != null)
