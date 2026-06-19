@@ -188,14 +188,14 @@ public class TrackManager : MonoBehaviour
                 if (laneBlocked[lane]) continue;
                 if (UnityEngine.Random.value > ObstacleChance) continue;
 
+                ObstacleEntry entry = PickWeighted(obstaclePrefabs);
                 float x = (lane - 2) * laneWidth;
                 float zOffset = UnityEngine.Random.Range(-SpawnInterval * 0.3f, SpawnInterval * 0.3f);
-                ObstacleEntry entry = PickWeighted(obstaclePrefabs);
                 GameObject o = GetPooled(entry.prefab);
                 _prefabLookup[o] = entry.prefab;
                 o.transform.localPosition = new Vector3(x, entry.yOffset, centerZ + zOffset);
                 activeObstacles.Add(o);
-                if (entry.blocksOwnLane)               laneBlocked[lane] = true;
+                if (entry.blocksOwnLane)               laneBlocked[lane]     = true;
                 if (entry.blocksLeftLane  && lane > 0) laneBlocked[lane - 1] = true;
                 if (entry.blocksRightLane && lane < 4) laneBlocked[lane + 1] = true;
             }

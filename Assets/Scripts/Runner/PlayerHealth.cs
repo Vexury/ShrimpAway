@@ -18,6 +18,9 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float armorDestroyDelay = 3f;
 
     public static event Action OnDeath;
+    public static event Action<int, int> OnDamaged;
+    public static event Action<int, int> OnHealed;
+
     public int CurrentHP => currentHP;
     public int MaxHP => maxHP;
 
@@ -60,6 +63,8 @@ public class PlayerHealth : MonoBehaviour
         int healed = currentHP - prev;
         for (int i = 0; i < healed; i++)
             ReattachArmor();
+        if (healed > 0)
+            OnHealed?.Invoke(currentHP, maxHP);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -79,7 +84,9 @@ public class PlayerHealth : MonoBehaviour
             if (clip != null) AudioManager.Instance.PlaySFX(clip);
         }
 
-        if (armorPieces != null && armorIndex < armorPieces.Length)
+        OnDamaged?.Invoke(currentHP, maxHP);
+
+        if (armorPieces != null && armorIndex < maxHP - 1)
             LaunchArmor(armorPieces[armorIndex++]);
 
         if (currentHP <= 0)

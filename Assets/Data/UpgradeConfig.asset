@@ -16,4 +16,5 @@ MonoBehaviour:
   hpBoostCosts: 2c010000
   coinBoosterCosts: 960000002c010000c20100005802000020030000
   magnetBoostCosts: 64000000c80000009001000058020000
-  fakeUpgradeCosts: e8030000d0070000b80b0000a00f000088130000
+  lastResortCosts: e8030000
+  fakeUpgradeCosts: 88130000

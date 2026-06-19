@@ -4,8 +4,6 @@ using UnityEngine;
 public class PlayerHUD : MonoBehaviour
 {
     [SerializeField] private TMP_Text coinLabel;
-    [SerializeField] private TMP_Text distanceLabel;
-    [SerializeField] private TrackManager trackManager;
 
     private void OnEnable()
     {
@@ -22,12 +20,6 @@ public class PlayerHUD : MonoBehaviour
     private void Start()
     {
         if (coinLabel != null) coinLabel.text = CoinWallet.Total.ToString();
-    }
-
-    private void Update()
-    {
-        if (trackManager != null && distanceLabel != null)
-            distanceLabel.text = $"{trackManager.DistanceTravelled:0} m";
     }
 
     private void OnCollected(CollectibleType type, int count)

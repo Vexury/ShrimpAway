@@ -8,9 +8,12 @@ public class MagnetEffect : MonoBehaviour
     private float remainingTime;
 
     public bool IsActive => remainingTime > 0f;
+    public float RemainingTime => remainingTime;
+    public float TotalDuration { get; private set; }
 
     public void Activate(float duration)
     {
+        TotalDuration = duration;
         remainingTime = Mathf.Max(remainingTime, duration);
     }
 

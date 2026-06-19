@@ -20,6 +20,10 @@ public class AudioManager : Singleton<AudioManager>
     private Coroutine musicFadeCoroutine;
     private Coroutine ambienceFadeCoroutine;
 
+    private const string KeyMusic    = "Vol_Music";
+    private const string KeyAmbience = "Vol_Ambience";
+    private const string KeySFX      = "Vol_SFX";
+
     protected override void Awake()
     {
         base.Awake();
@@ -47,6 +51,10 @@ public class AudioManager : Singleton<AudioManager>
             loopingSfxSource = CreateAudioSource("LoopingSFXSource");
             loopingSfxSource.loop = true;
         }
+
+        musicVolume    = PlayerPrefs.GetFloat(KeyMusic,    musicVolume);
+        ambienceVolume = PlayerPrefs.GetFloat(KeyAmbience, ambienceVolume);
+        sfxVolume      = PlayerPrefs.GetFloat(KeySFX,      sfxVolume);
 
         ApplyVolumes();
     }
@@ -260,18 +268,21 @@ public class AudioManager : Singleton<AudioManager>
     public void SetMusicVolume(float volume)
     {
         musicVolume = Mathf.Clamp01(volume);
+        PlayerPrefs.SetFloat(KeyMusic, musicVolume);
         ApplyVolumes();
     }
 
     public void SetAmbienceVolume(float volume)
     {
         ambienceVolume = Mathf.Clamp01(volume);
+        PlayerPrefs.SetFloat(KeyAmbience, ambienceVolume);
         ApplyVolumes();
     }
 
     public void SetSFXVolume(float volume)
     {
         sfxVolume = Mathf.Clamp01(volume);
+        PlayerPrefs.SetFloat(KeySFX, sfxVolume);
         ApplyVolumes();
     }
 

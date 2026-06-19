@@ -58,10 +58,6 @@ public class LeaderboardRow : MonoBehaviour
                 rankShimmerLow  = new Color(1f / m,     1f / m,     1f / m,     1f); // × face = white
                 rankShimmerHigh = new Color(hdr.r / m,  hdr.g / m,  hdr.b / m,  1f); // × face = HDR rank color
             }
-            else
-            {
-                nameLabel.fontMaterial.SetColor("_FaceColor", Color.white);
-            }
         }
     }
 
