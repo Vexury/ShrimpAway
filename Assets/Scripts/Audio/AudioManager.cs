@@ -111,7 +111,8 @@ public class AudioManager : Singleton<AudioManager>
             musicIntroSource = CreateAudioSource("MusicIntroSource");
 
         double startTime = AudioSettings.dspTime + 0.1;
-        double introDuration = (double)intro.samples / intro.frequency + loopStartOffset;
+        double introDuration = (double)intro.samples / intro.frequency;
+        double loopStartTime = startTime + introDuration + loopStartOffset;
 
         float vol = Curve(musicVolume) * Curve(masterVolume);
 
@@ -119,11 +120,12 @@ public class AudioManager : Singleton<AudioManager>
         musicIntroSource.loop = false;
         musicIntroSource.volume = vol;
         musicIntroSource.PlayScheduled(startTime);
+        musicIntroSource.SetScheduledEndTime(loopStartTime);
 
         musicSource.clip = loop;
         musicSource.loop = true;
         musicSource.volume = vol;
-        musicSource.PlayScheduled(startTime + introDuration);
+        musicSource.PlayScheduled(loopStartTime);
     }
 
     public void StopMusic()

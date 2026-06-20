@@ -24,6 +24,10 @@ public class GameOverScreen : MonoBehaviour
     [SerializeField] private Transform leaderboardContainer;
     [SerializeField] private LeaderboardRow leaderboardRowPrefab;
 
+    [Header("Quick Buy")]
+    [SerializeField] private Button quickBuyButton;
+    [SerializeField] private TMP_Text quickBuyCostLabel;
+
     private void OnEnable() => PlayerHealth.OnDeath += OnDeath;
     private void OnDisable() => PlayerHealth.OnDeath -= OnDeath;
 
@@ -65,6 +69,7 @@ public class GameOverScreen : MonoBehaviour
         if (newBestIndicator != null)  newBestIndicator.SetActive(newBest);
 
         panel.SetActive(true);
+        RefreshQuickBuy();
 
         string playerName = HighscoreManager.PlayerName;
         if (!string.IsNullOrWhiteSpace(playerName) && distance > 0f && DreamLoService.Instance != null)
@@ -142,6 +147,22 @@ public class GameOverScreen : MonoBehaviour
 
         foreach (var p in pieces)
             p.rt.localRotation = Quaternion.Euler(0f, 0f, p.targetAngle);
+    }
+
+    public void OnQuickBuyClicked()
+    {
+        UpgradeManager.Purchase(UpgradeType.HPBoost);
+        RefreshQuickBuy();
+    }
+
+    private void RefreshQuickBuy()
+    {
+        if (quickBuyButton == null) return;
+        int cost = UpgradeManager.NextCost(UpgradeType.HPBoost);
+        bool canBuy = UpgradeManager.CanPurchase(UpgradeType.HPBoost);
+        quickBuyButton.interactable = canBuy;
+        if (quickBuyCostLabel != null)
+            quickBuyCostLabel.text = cost >= 0 ? cost.ToString() : "OWNED";
     }
 
     private void CreditWalletAndResetRun()
